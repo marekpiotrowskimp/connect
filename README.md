@@ -37,3 +37,7 @@ make run
 - `make build` — builds all V2 binaries
 - `make test` — runs Go tests
 - `make package` — creates macOS .app bundle (V2 only)
+
+## License
+
+MIT — see [LICENSE](LICENSE).

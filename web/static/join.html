@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Connect invitation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="join-page">
+  <main class="join-shell">
+    <header class="brand brand-large">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <div>
+        <strong>Connect</strong>
+        <small>Invitation to share a workspace</small>
+      </div>
+    </header>
+    <section class="join-card">
+      <h1>Pair this computer with Connect</h1>
+      <p id="join-host">A device is waiting for you to join its paired workspace.</p>
+      <ol class="join-steps">
+        <li><strong>Open Connect</strong> on this computer (it runs locally).</li>
+        <li>In Connect, choose <em>Pair a device</em> from the empty state or the menu.</li>
+        <li>Copy the invitation link below and paste it in the <em>Join invitation</em> field, or just close this tab and use the link already copied to your clipboard.</li>
+      </ol>
+      <label for="join-link">Invitation link</label>
+      <div class="copy-row">
+        <input id="join-link" type="text" readonly spellcheck="false" />
+        <button id="join-copy" type="button" class="button button-primary">Copy</button>
+      </div>
+      <p id="join-status" class="field-hint"></p>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const input = document.getElementById("join-link");
+      const status = document.getElementById("join-status");
+      const link = window.location.href;
+      input.value = link;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(() => {
+          status.textContent = "Invitation link copied to your clipboard.";
+        }, () => {
+          status.textContent = "Copy the link manually if needed.";
+        });
+      } else {
+        status.textContent = "Copy the link manually if needed.";
+      }
+      document.getElementById("join-copy").addEventListener("click", async () => {
+        input.focus();
+        input.select();
+        try {
+          await navigator.clipboard.writeText(link);
+        } catch (_) {
+          document.execCommand("copy");
+        }
+        status.textContent = "Copied.";
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "clipboard:default",
+    "clipboard:allow-write-text",
+    "notification:default",
+    "notification:allow-notify",
+    "shell:default",
+    "shell:allow-open",
+    "fs:default",
+    "deep-link:default"
+  ]
+}

@@ -1,0 +1,13 @@
+/bin/
+*.db
+*.db-shm
+*.db-wal
+/ui/connect-ui/src-tauri/target/
+/ui/connect-ui/src-tauri/gen/
+/ui/connect-ui/node_modules/
+
+# sekrety / system
+.DS_Store
+.env
+secrets.h
+secrets.py

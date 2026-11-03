@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Connect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#" aria-label="Connect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>
+          <strong>Connect</strong>
+          <small>Private transfer workspaces</small>
+        </span>
+      </a>
+        <div class="local-device" aria-label="This device">
+          <span class="local-device-label">This device</span>
+          <strong id="self-name">Loading...</strong>
+        <span id="self-address">...</span>
+      </div>
+    </header>
+
+    <section id="connections-screen" class="screen dashboard-screen">
+      <header class="screen-header">
+        <div>
+          <p class="eyebrow">Your devices</p>
+          <h1>Connection workspaces</h1>
+          <p class="screen-description">Keep technical notes and transferred artifacts organized per device.</p>
+        </div>
+        <button id="connections-menu-button" type="button" class="icon-button header-menu-button" aria-label="Manage connections" title="Manage connections (Cmd/Ctrl+N)"><span data-icon="more"></span></button>
+      </header>
+
+      <p id="dashboard-error" class="inline-error" hidden></p>
+      <section class="connections-section" aria-labelledby="connections-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="connections-title" tabindex="-1">Saved connections</h2>
+            <p id="connections-caption">Select a device to open its workspace.</p>
+          </div>
+        </div>
+        <div id="connections-empty" class="empty-state empty-connections" hidden>
+          <div class="empty-state-mark">+</div>
+           <strong>No paired workspaces yet</strong>
+           <p>Pair another Connect service to create one shared workspace for the two computers.</p>
+           <button id="empty-connect-device-button" type="button" class="button button-primary">Pair a device</button>
+        </div>
+        <div id="connections-grid" class="connections-grid" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <section id="details-screen" class="screen details-screen" hidden>
+      <header class="detail-header">
+        <button id="back-to-connections" type="button" class="button button-quiet"><span data-icon="arrow-left"></span>Back to connections</button>
+        <div class="connection-identity">
+          <div id="detail-device-mark" class="device-mark" aria-hidden="true">?</div>
+          <div>
+            <div class="connection-title-row">
+              <h1 id="detail-connection-name" tabindex="-1">Loading...</h1>
+              <span id="detail-status" class="status-pill">Checking</span>
+            </div>
+            <p id="detail-connection-address">...</p>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <input id="file-upload-input" class="sr-only" type="file" multiple />
+          <button id="add-files-button" type="button" class="button button-secondary button-small"><span data-icon="upload"></span>Add files</button>
+          <button id="create-text-button" type="button" class="button button-primary button-small"><span data-icon="text"></span>New text</button>
+          <button id="remove-connection-button" type="button" class="button button-danger-quiet"><span data-icon="trash"></span>Remove device</button>
+        </div>
+      </header>
+
+      <p id="detail-error" class="inline-error" hidden></p>
+
+      <div class="workspace-layout">
+        <aside class="workspace-sidebar">
+          <div class="sidebar-heading">
+            <div>
+              <p class="sidebar-label">Browse</p>
+              <h3>Folders</h3>
+            </div>
+            <button id="new-folder-button" type="button" class="icon-button" aria-label="Create folder" title="Create folder"><span data-icon="folder-plus"></span></button>
+          </div>
+          <nav id="folder-list" class="folder-list" aria-label="Workspace folders"></nav>
+        </aside>
+
+        <section class="workspace-main" aria-label="Workspace artifacts">
+          <div class="workspace-toolbar">
+            <div class="workspace-context">
+              <strong id="workspace-title">All artifacts</strong>
+              <span id="workspace-result-count">0 artifacts</span>
+            </div>
+            <div class="filter-cluster">
+              <div class="filter-group" aria-label="Artifact type">
+                <span>Type</span>
+                <div class="segmented-control">
+                  <button type="button" data-type-filter="all" class="active">All</button>
+                  <button type="button" data-type-filter="file">Files</button>
+                  <button type="button" data-type-filter="text">Texts</button>
+                </div>
+              </div>
+              <div class="filter-group" aria-label="Artifact age">
+                <span>Attention</span>
+                <div class="segmented-control">
+                  <button type="button" data-age-filter="all" class="active">Any</button>
+                  <button type="button" data-age-filter="attention">Needs attention</button>
+                </div>
+              </div>
+            </div>
+            <div class="toolbar-controls">
+              <label class="search-field">
+                <span class="search-icon" data-icon="search"></span>
+                <span class="sr-only">Search workspace</span>
+                <input id="workspace-search" type="search" placeholder="Search this workspace" autocomplete="off" />
+              </label>
+              <select id="sort-select" aria-label="Sort artifacts">
+                <option value="recent:desc">Recent activity</option>
+                <option value="added:desc">Recently added</option>
+                <option value="name:asc">Name A-Z</option>
+                <option value="type:asc">Type</option>
+                <option value="stale:desc">Stale first</option>
+              </select>
+              <div class="view-toggle" aria-label="View mode">
+                <button type="button" data-view-mode="grid" class="active"><span data-icon="grid"></span><span class="sr-only">Grid</span></button>
+                <button type="button" data-view-mode="list"><span data-icon="list"></span><span class="sr-only">List</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div id="workspace-grid" class="workspace-grid" aria-live="polite">
+            <div id="workspace-empty" class="empty-state empty-workspace">
+              <div class="empty-state-mark"><span data-icon="sparkle"></span></div>
+              <strong id="workspace-empty-title">This workspace is ready</strong>
+              <p id="workspace-empty-description">Add files, create a text artifact or add a folder to start organizing this connection.</p>
+              <div class="dialog-actions">
+                <button id="empty-create-text-button" type="button" class="button button-primary"><span data-icon="text"></span>New text</button>
+                <button id="empty-add-files-button" type="button" class="button button-secondary"><span data-icon="upload"></span>Add files</button>
+                <button id="clear-workspace-filters-button" type="button" class="button button-secondary" hidden>Clear filters</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="inspector-panel" aria-live="polite">
+          <div id="inspector-empty" class="inspector-empty">
+            <p class="eyebrow">Details</p>
+            <h3>Select an artifact</h3>
+            <p>Choose an item to inspect its content, age and available actions.</p>
+          </div>
+          <div id="inspector-details" hidden>
+            <p class="eyebrow">Artifact details</p>
+            <div id="inspector-kind" class="inspector-kind">TXT</div>
+            <h3 id="inspector-title"></h3>
+            <pre id="inspector-content" class="inspector-content" hidden></pre>
+            <dl id="inspector-meta" class="inspector-meta"></dl>
+            <div id="inspector-actions" class="inspector-actions"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+
+  <dialog id="text-dialog" class="app-dialog" aria-labelledby="text-dialog-title">
+    <section class="dialog-card dialog-card-wide">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">New artifact</p>
+          <h2 id="text-dialog-title">Create text</h2>
+        </div>
+        <button type="button" class="dialog-close" data-close-dialog="text-dialog" aria-label="Close">Close</button>
+      </div>
+      <form id="text-create-form" class="dialog-form">
+        <label for="text-title">Title <span>Optional</span></label>
+        <input id="text-title" type="text" placeholder="Deploy command" autocomplete="off" />
+        <label for="text-content">Text</label>
+        <textarea id="text-content" rows="9" placeholder="Paste a command, note, log excerpt or snippet..." required></textarea>
+        <p id="text-folder-hint" class="field-hint"></p>
+        <p id="text-form-error" class="inline-error" hidden></p>
+        <div class="dialog-actions">
+          <button type="button" class="button button-secondary" data-close-dialog="text-dialog">Cancel</button>
+          <button id="text-submit-button" type="submit" class="button button-primary">Save text</button>
+        </div>
+      </form>
+    </section>
+  </dialog>
+
+  <dialog id="connection-dialog" class="app-dialog">
+    <section class="dialog-card dialog-card-wide">
+      <div class="dialog-header"><div><p class="eyebrow">Pair a device</p><h2>Invitation link</h2></div><button type="button" class="dialog-close" data-close-dialog="connection-dialog">Close</button></div>
+      <p id="invite-form-error" class="inline-error" hidden></p>
+      <section class="connect-choice">
+        <div>
+          <h3>1. Create invitation</h3>
+          <p>Send this link to the computer that will connect to this one.</p>
+          <button id="create-invite-button" type="button" class="button button-primary">Create invitation</button>
+        </div>
+        <div id="invite-result" class="invite-result" hidden>
+          <label for="invite-url">Invitation link</label>
+          <div class="copy-row"><input id="invite-url" type="text" readonly spellcheck="false" /><button id="copy-invite-button" type="button" class="button button-secondary">Copy</button></div>
+          <div class="dialog-actions"><a id="email-invite-button" class="button button-secondary" href="#">Send by email</a><button id="share-invite-button" type="button" class="button button-secondary">Share</button></div>
+        </div>
+      </section>
+      <div class="dialog-divider"><span>or</span></div>
+      <form id="pair-form" class="dialog-form"><label for="pair-url">2. Join invitation</label><input id="pair-url" type="url" placeholder="Paste a Connect invitation link" required spellcheck="false" /><p>Paste the link received from the other computer. Connect creates the shared workspace automatically.</p><p id="pair-form-error" class="inline-error" hidden></p><div class="dialog-actions"><button type="submit" class="button button-primary">Join device</button></div></form>
+    </section>
+  </dialog>
+
+  <dialog id="folder-dialog" class="app-dialog" aria-labelledby="folder-dialog-title">
+    <section class="dialog-card">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Organize workspace</p>
+          <h2 id="folder-dialog-title">Create folder</h2>
+        </div>
+        <button type="button" class="dialog-close" data-close-dialog="folder-dialog" aria-label="Close">Close</button>
+      </div>
+      <form id="folder-create-form" class="dialog-form">
+        <label for="folder-name">Folder name</label>
+        <input id="folder-name" type="text" placeholder="Logs" autocomplete="off" required />
+        <p id="folder-form-error" class="inline-error" hidden></p>
+        <div class="dialog-actions">
+          <button type="button" class="button button-secondary" data-close-dialog="folder-dialog">Cancel</button>
+          <button id="folder-submit-button" type="submit" class="button button-primary">Create folder</button>
+        </div>
+      </form>
+    </section>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
